@@ -79,24 +79,15 @@ public class PlatosREST {
 			response.setError("El nombre es obligatorio");
 			return ResponseEntity.ok(response);
 		}
-
-		try {
-			String precioPlato = plato.getPrecio().toString();
-			if (!precioPlato.matches("^\\d\\d*(\\.\\d+)?$")) {
-				response.setError("El precio debe ser númerico");
-				return ResponseEntity.ok(response);
-			}
-		}
-		catch(Exception e) {
-		}
-		
 		if (plato.getPrecio() == null) {
 			response.setError("El precio es obligatorio");
 			return ResponseEntity.ok(response);
 		}
-		if (plato.getEstado() == null
-				|| plato.getEstado().intValue() > 1 
-				|| plato.getEstado().intValue() < 0) {
+		if (!plato.getPrecio().matches("^\\d\\d*(\\.\\d+)?$")) {
+			response.setError("El precio debe ser numerico");
+			return ResponseEntity.ok(response);
+		}
+		if (plato.getEstado() == null || plato.getEstado().intValue() > 1 || plato.getEstado().intValue() < 0) {
 			response.setError("El estado debe ser 0: no disponible | 1: disponible");
 			return ResponseEntity.ok(response);
 		}
@@ -110,9 +101,9 @@ public class PlatosREST {
 
 	@PutMapping(value = "{platoId}")
 	public ResponseEntity<PlatoEliminarResponse> deletePlato(@PathVariable("platoId") Long platoId) {
-		
+
 		PlatoEliminarResponse response = new PlatoEliminarResponse();
-		
+
 		// Chekamos si el plato que se quiere deshabilitar existe en la DB
 		Optional<Platos> optionalPlato = platoDAO.findById(platoId);
 
@@ -121,52 +112,55 @@ public class PlatosREST {
 			response.setError("Plato no existente en la base de datos");
 			return ResponseEntity.ok(response);
 		}
-		
+
 		// Si existe, cambiamos estado
 		Platos platoDesabilitado = optionalPlato.get();
 		platoDesabilitado.setEstado(0);
-		
+
 		platoDAO.save(platoDesabilitado);
-		
+
 		response.setExito("Eliminado con Exito");
-		
+
 		return ResponseEntity.ok(response);
 	}
 
 	@PutMapping()
 	public ResponseEntity<PlatoActualizarResponse> updatePlato(@RequestBody Platos plato) {
-		
+
 		PlatoActualizarResponse response = new PlatoActualizarResponse();
-		
+
 		// validaciones
-		
+
 		if (plato.getId() == null) {
 			response.setError("El ID es obligatorio");
 			return ResponseEntity.ok(response);
 		}
-		
+
 		Optional<Platos> optionalPlato = platoDAO.findById(plato.getId());
-		
+
 		if (!optionalPlato.isPresent()) {
 			response.setError("Plato no existente en la base de datos");
 			return ResponseEntity.ok(response);
 		}
-		
+
+		// validaciones
 		if (plato.getNombre() == null || plato.getNombre().isBlank()) {
-			response.setError("El Nombre es obligatorio");
+			response.setError("El nombre es obligatorio");
 			return ResponseEntity.ok(response);
-			// no he logrado validar que el precio sea númerico
-		} else if (Double.valueOf(plato.getPrecio().toString()) == null
-				|| !Double.valueOf(plato.getPrecio()).toString().matches("^\\d\\d*(\\.\\d+)?$")) {
-			response.setError("Debe ingresar un número para el precio");
+		}
+		if (plato.getPrecio() == null) {
+			response.setError("El precio es obligatorio");
 			return ResponseEntity.ok(response);
-		} else if (plato.getEstado() == null
-				|| plato.getEstado().intValue() > 1 
-				|| plato.getEstado().intValue() < 0) {
+		}
+		if (!plato.getPrecio().matches("^\\d\\d*(\\.\\d+)?$")) {
+			response.setError("El precio debe ser numerico");
+			return ResponseEntity.ok(response);
+		}
+		if (plato.getEstado() == null || plato.getEstado().intValue() > 1 || plato.getEstado().intValue() < 0) {
 			response.setError("El estado debe ser 0: no disponible | 1: disponible");
 			return ResponseEntity.ok(response);
 		}
-		
+
 		Platos updatePlato = optionalPlato.get();
 
 		updatePlato.setNombre(plato.getNombre());
