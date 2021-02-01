@@ -1,12 +1,9 @@
 package com.akipav2.responses;
 
-import com.akipav2.entitys.Platos;
-
-public class PlatoResponse {
+public class PlatoEliminarResponse {
 
 	private String status;
 	private String mensaje;
-	private Platos plato;
 	
 	public String getStatus() {
 		return status;
@@ -20,12 +17,6 @@ public class PlatoResponse {
 	public void setMensaje(String mensaje) {
 		this.mensaje = mensaje;
 	}
-	public Platos getPlato() {
-		return plato;
-	}
-	public void setPlato(Platos plato) {
-		this.plato = plato;
-	}
 	
 	public void setError(String mensaje) {
 		status = "99";
@@ -36,5 +27,4 @@ public class PlatoResponse {
 		status = "01";
 		this.mensaje = mensaje;
 	}
-	
 }
