@@ -19,8 +19,8 @@ public class Platos {
 	@Column(name = "nombre", nullable = false, length = 50)
 	private String nombre;
 	
-	@Column(name = "precio", nullable = false)
-	private Double precio;
+	@Column(name = "precio", nullable = false, length = 10)
+	private String precio;
 	
 	@Column(name = "estado", nullable = false)
 	private Integer estado;
@@ -48,11 +48,11 @@ public class Platos {
 		this.nombre = nombre;
 	}
 
-	public Double getPrecio() {
+	public String getPrecio() {
 		return precio;
 	}
 
-	public void setPrecio(Double precio) {
+	public void setPrecio(String precio) {
 		this.precio = precio;
 	}
 
