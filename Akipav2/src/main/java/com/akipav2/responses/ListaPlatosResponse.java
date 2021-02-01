@@ -29,4 +29,13 @@ public class ListaPlatosResponse {
 		this.platos = platos;
 	}
 	
+	public void setError(String mensaje) {
+		status = "99";
+		this.mensaje = mensaje;
+	}
+	
+	public void setExito(String mensaje) {
+		status = "01";
+		this.mensaje = mensaje;
+	}
 }

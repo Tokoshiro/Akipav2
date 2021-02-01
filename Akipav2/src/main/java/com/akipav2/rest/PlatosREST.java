@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.akipav2.dao.PlatosDAO;
 import com.akipav2.entitys.Platos;
 import com.akipav2.responses.ListaPlatosResponse;
+import com.akipav2.responses.PlatoActualizarResponse;
+import com.akipav2.responses.PlatoEliminarResponse;
 import com.akipav2.responses.PlatoRegistroResponse;
 import com.akipav2.responses.PlatoResponse;
 
@@ -38,13 +40,11 @@ public class PlatosREST {
 		response.setPlatos(platos);
 
 		if (platos.isEmpty() || platos == null) {
-			response.setStatus("00");
-			response.setMensaje("No hay platos disponibles");
+			response.setError("No hay platos disponibles");
 			return ResponseEntity.ok(response);
 		}
 
-		response.setStatus("01");
-		response.setMensaje("Solicitud Exitosa");
+		response.setExito("Solicitud Exitosa");
 		return ResponseEntity.ok(response);
 	}
 
@@ -60,12 +60,10 @@ public class PlatosREST {
 		}
 
 		if (response.getPlato() == null) {
-			response.setStatus("00");
-			response.setMensaje("Plato no encontrado");
+			response.setError("Plato no encontrado");
 			return ResponseEntity.ok(response);
 		} else {
-			response.setStatus("01");
-			response.setMensaje("Solicitud Exitosa");
+			response.setExito("Solicitud Exitosa");
 			return ResponseEntity.ok(response);
 		}
 
@@ -77,6 +75,83 @@ public class PlatosREST {
 		PlatoRegistroResponse response = new PlatoRegistroResponse();
 
 		// validaciones
+		if (plato.getNombre() == null || plato.getNombre().isBlank()) {
+			response.setError("El nombre es obligatorio");
+			return ResponseEntity.ok(response);
+		}
+
+		try {
+			String precioPlato = plato.getPrecio().toString();
+			if (!precioPlato.matches("^\\d\\d*(\\.\\d+)?$")) {
+				response.setError("El precio debe ser númerico");
+				return ResponseEntity.ok(response);
+			}
+		}
+		catch(Exception e) {
+		}
+		
+		if (plato.getPrecio() == null) {
+			response.setError("El precio es obligatorio");
+			return ResponseEntity.ok(response);
+		}
+		if (plato.getEstado() == null
+				|| plato.getEstado().intValue() > 1 
+				|| plato.getEstado().intValue() < 0) {
+			response.setError("El estado debe ser 0: no disponible | 1: disponible");
+			return ResponseEntity.ok(response);
+		}
+
+		// si llega acá es que pasó todas las validaciones
+		platoDAO.save(plato);
+		response.setExito("Registro exitoso");
+
+		return ResponseEntity.ok(response);
+	}
+
+	@PutMapping(value = "{platoId}")
+	public ResponseEntity<PlatoEliminarResponse> deletePlato(@PathVariable("platoId") Long platoId) {
+		
+		PlatoEliminarResponse response = new PlatoEliminarResponse();
+		
+		// Chekamos si el plato que se quiere deshabilitar existe en la DB
+		Optional<Platos> optionalPlato = platoDAO.findById(platoId);
+
+		// Si no existe, mandamos error correspondiente
+		if (!optionalPlato.isPresent()) {
+			response.setError("Plato no existente en la base de datos");
+			return ResponseEntity.ok(response);
+		}
+		
+		// Si existe, cambiamos estado
+		Platos platoDesabilitado = optionalPlato.get();
+		platoDesabilitado.setEstado(0);
+		
+		platoDAO.save(platoDesabilitado);
+		
+		response.setExito("Eliminado con Exito");
+		
+		return ResponseEntity.ok(response);
+	}
+
+	@PutMapping()
+	public ResponseEntity<PlatoActualizarResponse> updatePlato(@RequestBody Platos plato) {
+		
+		PlatoActualizarResponse response = new PlatoActualizarResponse();
+		
+		// validaciones
+		
+		if (plato.getId() == null) {
+			response.setError("El ID es obligatorio");
+			return ResponseEntity.ok(response);
+		}
+		
+		Optional<Platos> optionalPlato = platoDAO.findById(plato.getId());
+		
+		if (!optionalPlato.isPresent()) {
+			response.setError("Plato no existente en la base de datos");
+			return ResponseEntity.ok(response);
+		}
+		
 		if (plato.getNombre() == null || plato.getNombre().isBlank()) {
 			response.setError("El Nombre es obligatorio");
 			return ResponseEntity.ok(response);
@@ -91,40 +166,20 @@ public class PlatosREST {
 			response.setError("El estado debe ser 0: no disponible | 1: disponible");
 			return ResponseEntity.ok(response);
 		}
+		
+		Platos updatePlato = optionalPlato.get();
 
-		// si llega acá es que pasó todas las validaciones
-		platoDAO.save(plato);
-		response.setExito("Registro exitoso");
+		updatePlato.setNombre(plato.getNombre());
+		updatePlato.setPrecio(plato.getPrecio());
+		updatePlato.setEstado(plato.getEstado());
+		updatePlato.setImagen(plato.getImagen());
+		updatePlato.setDescripcionPlato(plato.getDescripcionPlato());
 
+		updatePlato = platoDAO.save(updatePlato);
+
+		response.setPlato(updatePlato);
+		response.setExito("Actualización Realizada con Exito");
 		return ResponseEntity.ok(response);
-	}
-
-	@DeleteMapping(value = "{platoId}")
-	public ResponseEntity<Void> deletePlato(@PathVariable("platoId") Long platoId) {
-		platoDAO.deleteById(platoId);
-		return ResponseEntity.ok(null);
-
-	}
-
-	@PutMapping()
-	public ResponseEntity<Platos> updatePlato(@RequestBody Platos plato) {
-		Optional<Platos> optionalPlato = platoDAO.findById(plato.getId());
-		if (optionalPlato.isPresent()) {
-
-			Platos updatePlato = optionalPlato.get();
-
-			updatePlato.setNombre(plato.getNombre());
-			updatePlato.setPrecio(plato.getPrecio());
-			updatePlato.setEstado(plato.getEstado());
-			updatePlato.setImagen(plato.getImagen());
-			updatePlato.setDescripcionPlato(plato.getDescripcionPlato());
-
-			platoDAO.save(updatePlato);
-
-			return ResponseEntity.ok(updatePlato);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
 	}
 
 }

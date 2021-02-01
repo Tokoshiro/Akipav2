@@ -19,7 +19,7 @@ public class PlatoRegistroResponse {
 	}
 	
 	public void setError(String mensaje) {
-		status = "00";
+		status = "99";
 		this.mensaje = mensaje;
 	}
 	
@@ -27,4 +27,5 @@ public class PlatoRegistroResponse {
 		status = "01";
 		this.mensaje = mensaje;
 	}
+	
 }
