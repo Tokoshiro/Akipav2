@@ -93,6 +93,10 @@ public class PedidosREST {
 			response.setError("El numero celular es obligatorio");
 			return ResponseEntity.ok(response);
 		}
+		if (pedido.getCelular().length()!=9) {
+			response.setError("El numero celular debe tener 9 digitos");
+			return ResponseEntity.ok(response);
+		}		
 		if (!pedido.getCelular().matches("^\\d\\d*(\\.\\d+)?$")) {
 			response.setError("El celular debe ser numerico");
 			return ResponseEntity.ok(response);

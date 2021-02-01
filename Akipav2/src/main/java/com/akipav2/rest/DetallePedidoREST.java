@@ -66,6 +66,7 @@ public class DetallePedidoREST {
 		return ResponseEntity.ok(response);
 	}
 	
+	/* no necesario por ahora
 	//obtiene detalle plato por ID
 	@RequestMapping(value = "{detalleId}", method = RequestMethod.GET)
 	public ResponseEntity<DetallePedidoResponse> getDetalleById(@PathVariable("detalleId")Long detalleId){
@@ -94,10 +95,10 @@ public class DetallePedidoREST {
 			return ResponseEntity.ok(response);
 			
 		}		
-	}
+	}*/
 	
 	//registrar detalle pedido
-	@PostMapping()
+	@PostMapping(value ="registrodetalle")
 	public ResponseEntity<DetallePedidoRegistroResponse> createDetalle(@RequestBody DetallePedido detalle){
 		
 		DetallePedidoRegistroResponse response = new DetallePedidoRegistroResponse();
