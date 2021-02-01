@@ -9,7 +9,5 @@ import com.akipav2.entitys.DetallePedido;
 
 public interface DetallePedidoDAO extends JpaRepository<DetallePedido, Long>{
 
-	@Query("SELECT * FROM DetallePedido")
-	List<DetallePedido> findAllAvailableDetalles();
-	
+		
 }

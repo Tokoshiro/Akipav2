@@ -37,7 +37,7 @@ public class DetallePedidoREST {
 	public  ResponseEntity<ListaDetallePedidoResponse> getDetalle(){
 		
 		ListaDetallePedidoResponse response = new ListaDetallePedidoResponse();
-		List<DetallePedido> detalle = detalleDAO.findAllAvailableDetalles();
+		List<DetallePedido> detalle = detalleDAO.findAll();
 		
 		response.setDetallePedido(detalle);
 		
