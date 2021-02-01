@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.akipav2.dao.PlatosDAO;
 import com.akipav2.entitys.Platos;
 import com.akipav2.responses.ListaPlatosResponse;
+import com.akipav2.responses.PlatoEliminarResponse;
 import com.akipav2.responses.PlatoRegistroResponse;
 import com.akipav2.responses.PlatoResponse;
 
@@ -99,11 +100,29 @@ public class PlatosREST {
 		return ResponseEntity.ok(response);
 	}
 
-	@DeleteMapping(value = "{platoId}")
-	public ResponseEntity<Void> deletePlato(@PathVariable("platoId") Long platoId) {
-		platoDAO.deleteById(platoId);
-		return ResponseEntity.ok(null);
+	@PutMapping(value = "{platoId}")
+	public ResponseEntity<PlatoEliminarResponse> deletePlato(@PathVariable("platoId") Long platoId) {
+		
+		PlatoEliminarResponse response = new PlatoEliminarResponse();
+		
+		// Chekamos si el plato que se quiere deshabilitar existe en la DB
+		Optional<Platos> optionalPlato = platoDAO.findById(platoId);
 
+		// Si no existe, mandamos error correspondiente
+		if (!optionalPlato.isPresent()) {
+			response.setError("Plato no existente en la base de datos");
+			return ResponseEntity.ok(response);
+		}
+		
+		// Si existe, cambiamos estado
+		Platos platoDesabilitado = optionalPlato.get();
+		platoDesabilitado.setEstado(0);
+		
+		platoDAO.save(platoDesabilitado);
+		
+		response.setExito("Eliminado con Exito");
+		
+		return ResponseEntity.ok(response);
 	}
 
 	@PutMapping()
