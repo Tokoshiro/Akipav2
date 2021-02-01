@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.akipav2.dao.DetallePedidoDAO;
+import com.akipav2.dao.PedidosDAO;
 import com.akipav2.dao.PlatosDAO;
 import com.akipav2.entitys.DetallePedido;
+import com.akipav2.entitys.Pedido;
+import com.akipav2.entitys.Platos;
 import com.akipav2.responses.DetallePedidoEliminarResponse;
 import com.akipav2.responses.DetallePedidoRegistroResponse;
 import com.akipav2.responses.DetallePedidoResponse;
@@ -34,6 +37,9 @@ public class DetallePedidoREST {
 	
 	@Autowired
 	private PlatosDAO platoDao;
+	
+	@Autowired
+	private PedidosDAO pedidoDao;
 	
 	//lista todos los datos de la tabla DetallePedido
 	@RequestMapping(value = "pedidos/{IdPedido}/detalle", method = RequestMethod.GET)
@@ -109,12 +115,28 @@ public class DetallePedidoREST {
 		if (detalle.getIdpedido()==null || detalle.getIdpedido()<=0) {
 			response.setError("Id del pedido inexistente o menor a 0");
 			return ResponseEntity.ok(response);
-		} 
+		}
+		
+		// validamos que ese pedido exista en la DB
+		Optional<Pedido> pedido = pedidoDao.findById(detalle.getIdpedido());
+		if (!pedido.isPresent()) {
+			response.setError("El Pedido con ID: " + detalle.getIdpedido() + " no existe");
+			return ResponseEntity.ok(response);
+		}
+	
 		//validamos id del plato 
 		else if (detalle.getIdplato()==null || detalle.getIdplato()<=0) {
 			response.setError("Id del plato inexistente o menor a 0");
 			return ResponseEntity.ok(response);
-		} 
+		}
+		
+		// validamos que el plato exista en la DB
+		Optional<Platos> plato = platoDao.findById(detalle.getIdplato());
+		if (!plato.isPresent()) {
+			response.setError("El Plato con ID: " + detalle.getIdplato() + " no existe");
+			return ResponseEntity.ok(response);
+		}
+		
 		//validamos cantidad
 		else if(detalle.getCantidad()==null || detalle.getCantidad()<=0) {
 			response.setError("Se necesita agregar cantidad plato");
