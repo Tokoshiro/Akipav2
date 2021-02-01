@@ -101,12 +101,9 @@ public class PedidosREST {
 			response.setError("El celular debe iniciar con 9");
 			return ResponseEntity.ok(response);
 		}
-		if (pedido.getEstado()==null || pedido.getEstado().intValue()>3 
-									|| pedido.getEstado().intValue()<0) {
-			response.setError("El estado debe ser 0: rechazado | 1: en espera | 2: rechazado");
-			return ResponseEntity.ok(response);
-			
-		}
+		// He quitado la validación del Estado, debido a que cuando se ingrese un pedido
+		// esté estará 'en espera' por defecto. 2 -> en espera
+		pedido.setEstado(2);
 		
 		//validaciones correctas
 		pedidoDAO.save(pedido);

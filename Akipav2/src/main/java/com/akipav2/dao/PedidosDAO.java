@@ -9,7 +9,7 @@ import com.akipav2.entitys.Pedido;
 
 public interface PedidosDAO extends JpaRepository<Pedido, Long>{
 	
-	@Query("SELECT p FROM Pedidos Where p.estado = 1 and 3")
+	@Query("SELECT p FROM Pedido p Where p.estado = 1 or p.estado = 2")
 	List<Pedido> findAllAvailablePedidos();
 
 }
