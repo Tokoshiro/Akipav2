@@ -118,24 +118,24 @@ public class PedidosREST {
 		PedidoEliminarResponse response = new PedidoEliminarResponse();
 		Optional<Pedido> pedidoOptional = pedidoDAO.findById(pedidoId);
 		
-		if(razon == null || razon.getRazon() == null || razon.getRazon().length() == 0) {
-			response.setError("Debe especificar una razón");
-			return ResponseEntity.ok(response);
-		}
-		
 		if (!pedidoOptional.isPresent()) {
 			response.setError("No existe el pedido en la base de datos");
 			response.setRazon(null);
 			return ResponseEntity.ok(response);
 		}
+		if(razon == null || razon.getRazon() == null || razon.getRazon().length() == 0) {
+			response.setError("Debe especificar una razón");
+			return ResponseEntity.ok(response);
+		}
 		
 		Pedido pedido = pedidoOptional.get();
 		pedido.setEstado(0);
+		pedido.setRazonRechazo(razon.getRazon());
 		
 		pedidoDAO.save(pedido);
 		
 		response.setExito("Pedido Rechazado");
-		response.setRazon(razon.getRazon());
+		response.setRazon(pedido.getRazonRechazo());
 		return ResponseEntity.ok(response);
 		
 	}
