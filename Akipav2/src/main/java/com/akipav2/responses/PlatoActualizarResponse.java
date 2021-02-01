@@ -2,7 +2,7 @@ package com.akipav2.responses;
 
 import com.akipav2.entitys.Platos;
 
-public class PlatoResponse {
+public class PlatoActualizarResponse {
 
 	private String status;
 	private String mensaje;
@@ -20,6 +20,7 @@ public class PlatoResponse {
 	public void setMensaje(String mensaje) {
 		this.mensaje = mensaje;
 	}
+	
 	public Platos getPlato() {
 		return plato;
 	}
@@ -36,5 +37,4 @@ public class PlatoResponse {
 		status = "01";
 		this.mensaje = mensaje;
 	}
-	
 }
