@@ -3,12 +3,13 @@ package com.akipav2.responses;
 import java.util.List;
 
 import com.akipav2.entitys.DetallePedido;
+import com.akipav2.utils.DetallePorPlato;
 
 public class ListaDetallePedidoResponse {
 
 	private String status;
 	private String mensaje;
-	private List<DetallePedido> detallePedido;
+	private List<DetallePorPlato> detallePorPlato;
 	
 	public String getStatus() {
 		return status;
@@ -22,11 +23,11 @@ public class ListaDetallePedidoResponse {
 	public void setMensaje(String mensaje) {
 		this.mensaje = mensaje;
 	}
-	public List<DetallePedido> getDetallePedido() {
-		return detallePedido;
+	public List<DetallePorPlato> getDetallePedido() {
+		return detallePorPlato;
 	}
-	public void setDetallePedido(List<DetallePedido> detallePedido) {
-		this.detallePedido = detallePedido;
+	public void setDetallePedido(List<DetallePorPlato> detallePedido) {
+		this.detallePorPlato = detallePedido;
 	}
 	
 }

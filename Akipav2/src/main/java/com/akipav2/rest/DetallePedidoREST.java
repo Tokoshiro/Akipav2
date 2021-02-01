@@ -1,14 +1,13 @@
 package com.akipav2.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,29 +21,43 @@ import com.akipav2.responses.DetallePedidoRegistroResponse;
 import com.akipav2.responses.DetallePedidoResponse;
 import com.akipav2.responses.ListaDetallePedidoResponse;
 import com.akipav2.responses.PlatoRegistroResponse;
+import com.akipav2.utils.DetallePorPlato;
 
 import io.swagger.models.Response;
 
 @RestController
-@RequestMapping("/detallePedido")
+@RequestMapping("/")
 public class DetallePedidoREST {
 
 	@Autowired
 	private DetallePedidoDAO detalleDAO;
 	
+	@Autowired
+	private PlatosDAO platoDao;
+	
 	//lista todos los datos de la tabla DetallePedido
-	@RequestMapping(method = RequestMethod.GET)
-	public  ResponseEntity<ListaDetallePedidoResponse> getDetalle(){
+	@RequestMapping(value = "pedidos/{IdPedido}/detalle", method = RequestMethod.GET)
+	public  ResponseEntity<ListaDetallePedidoResponse> getDetalle(@PathVariable("IdPedido") Long idPedido){
 		
 		ListaDetallePedidoResponse response = new ListaDetallePedidoResponse();
-		List<DetallePedido> detalle = detalleDAO.findAll();
+		List<DetallePedido> detalle = detalleDAO.getDetalleDelPedido(idPedido);
 		
-		response.setDetallePedido(detalle);
+		List<DetallePorPlato> detallePorPlato = new ArrayList<>();
+		DetallePorPlato plato = null;
+		
+		for(DetallePedido d: detalle) {
+			plato = new DetallePorPlato();
+			plato.setCantidad(d.getCantidad());
+			plato.setPlato(platoDao.findById(d.getIdplato()).get().getNombre());
+			detallePorPlato.add(plato);
+		}
+		
+		response.setDetallePedido(detallePorPlato);
 		
 		//validamos que detalle exista
-		if (detalle.isEmpty() || detalle==null) {
+		if (detalle.isEmpty() || detalle == null) {
 			response.setStatus("99");
-			response.setMensaje("No existen detalles de pedidos");
+			response.setMensaje("No existe un detalle para este pedido");
 			return ResponseEntity.ok(response);
 		}
 		//validacion correcta
