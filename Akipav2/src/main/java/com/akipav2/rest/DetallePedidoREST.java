@@ -117,7 +117,7 @@ public class DetallePedidoREST {
 		} 
 		//validamos cantidad
 		else if(detalle.getCantidad()==null || detalle.getCantidad()<=0) {
-			response.setError("Se necesita agregar un plato");
+			response.setError("Se necesita agregar cantidad plato");
 			return ResponseEntity.ok(response);
 		}
 		// validaciones correctas
