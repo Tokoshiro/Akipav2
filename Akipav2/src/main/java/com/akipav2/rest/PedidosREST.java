@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.akipav2.dao.PedidosDAO;
 import com.akipav2.entitys.Pedido;
+import com.akipav2.responses.PedidoActualizarResponse;
 import com.akipav2.responses.PedidoEliminarResponse;
 import com.akipav2.utils.Razon;
 
@@ -55,7 +56,7 @@ public class PedidosREST {
 		
 	}
 	
-	@PutMapping(value = "{pedidoId}")
+	@PutMapping(value = "{pedidoId}/rechazar")
 	public ResponseEntity<PedidoEliminarResponse> deletePedido(@RequestBody Razon razon, @PathVariable("pedidoId") Long pedidoId){
 		
 		PedidoEliminarResponse response = new PedidoEliminarResponse();
@@ -83,25 +84,23 @@ public class PedidosREST {
 		
 	}
 	
-	@PutMapping()
-	public ResponseEntity<Pedido> updatePedido(@RequestBody Pedido pedido){
-		Optional<Pedido> optionalPedido = pedidoDAO.findById(pedido.getId());
-		if (optionalPedido.isPresent()) {
-			
-			Pedido updatePedido = optionalPedido.get();
-			
-			updatePedido.setNombre(pedido.getNombre());
-			updatePedido.setDireccion(pedido.getDireccion());
-			updatePedido.setReferencia(pedido.getReferencia());
-			updatePedido.setCelular(pedido.getCelular());
-			updatePedido.setEstado(pedido.getEstado());
-			
-			pedidoDAO.save(updatePedido);
-			
-			return ResponseEntity.ok(updatePedido);
-		}else {
-			return ResponseEntity.notFound().build();
+	@PutMapping(value = "{pedidoId}/aceptar")
+	public ResponseEntity<PedidoActualizarResponse> aceptarPedido(@PathVariable("pedidoId") Long pedidoId){
+		
+		PedidoActualizarResponse response = new PedidoActualizarResponse();
+		Optional<Pedido> pedidoOptional = pedidoDAO.findById(pedidoId);
+		
+		if (!pedidoOptional.isPresent()) {
+			response.setError("No existe el pedido en la base de datos");
+			return ResponseEntity.ok(response);
 		}
+		
+		Pedido pedido = pedidoOptional.get();
+		pedido.setEstado(1);
+		
+		pedidoDAO.save(pedido);
+		response.setExito("Pedido Aceptado");
+		return ResponseEntity.ok(response);
 	}
 	
 }
