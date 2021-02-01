@@ -119,7 +119,7 @@ public class PlatosREST {
 
 		platoDAO.save(platoDesabilitado);
 
-		response.setExito("Eliminado con Exito");
+		response.setExito("Plato desactivado");
 
 		return ResponseEntity.ok(response);
 	}
