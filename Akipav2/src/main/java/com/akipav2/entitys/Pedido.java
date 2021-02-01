@@ -25,8 +25,8 @@ public class Pedido {
 	@Column(name = "referencia", nullable = true, length = 50)
 	private String referencia;
 	
-	@Column(name = "celular", nullable = false)
-	private Integer celular;
+	@Column(name = "celular", nullable = false, length = 9)
+	private String celular;
 	
 	@Column(name = "estado", nullable = false)
 	private Integer estado;
@@ -65,11 +65,11 @@ public class Pedido {
 		this.referencia = referencia;
 	}
 
-	public Integer getCelular() {
+	public String getCelular() {
 		return celular;
 	}
 
-	public void setCelular(Integer celular) {
+	public void setCelular(String celular) {
 		this.celular = celular;
 	}
 
