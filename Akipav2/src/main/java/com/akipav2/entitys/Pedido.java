@@ -31,7 +31,8 @@ public class Pedido {
 	@Column(name = "estado", nullable = false)
 	private Integer estado;
 
-	
+	@Column(name = "razon_rechazo", nullable = true, length = 100)
+	private String razonRechazo;
 	
 	public Long getId() {
 		return id;
@@ -80,6 +81,13 @@ public class Pedido {
 	public void setEstado(Integer estado) {
 		this.estado = estado;
 	}
-	
+
+	public String getRazonRechazo() {
+		return razonRechazo;
+	}
+
+	public void setRazonRechazo(String razonRechazo) {
+		this.razonRechazo = razonRechazo;
+	}
 	
 }
