@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.akipav2.dao.DetallePedidoDAO;
 import com.akipav2.dao.PlatosDAO;
 import com.akipav2.entitys.DetallePedido;
+import com.akipav2.responses.DetallePedidoEliminarResponse;
 import com.akipav2.responses.DetallePedidoRegistroResponse;
 import com.akipav2.responses.DetallePedidoResponse;
 import com.akipav2.responses.ListaDetallePedidoResponse;
@@ -112,24 +113,23 @@ public class DetallePedidoREST {
 		return ResponseEntity.ok(response);
 	}
 	
-	//eliminar detalle pedido
+	
+	//eliminar detalle no necesario
+	/*eliminar detalle pedido
 	@DeleteMapping(value = "{detalleId}")
-	public ResponseEntity<DetallePedidoResponse> deleteDetalle(@PathVariable("detalleId")Long detalleId){
+	public ResponseEntity<DetallePedidoEliminarResponse> deleteDetalle(@PathVariable("detalleId")Long detalleId){
 		
-		DetallePedidoResponse response = new DetallePedidoResponse();
+		DetallePedidoEliminarResponse response = new DetallePedidoEliminarResponse();
+		
+		//obtenemos el detalle
 		Optional<DetallePedido> optionalDetalle = detalleDAO.findById(detalleId);
-		
-		//obtenemos el detalle  
-		if (optionalDetalle.isPresent()) {
-			response.setDetallePedido(optionalDetalle.get());
-		}
-		
+  
 		//validamos si existe detalle
-		if (response.getDetallePedido()==null) {
-			response.setStatus("99");
-			response.setMensaje("Detalle no encontrado");
+		if (!optionalDetalle.isPresent()) {
+			response.setError("Detalle no existente");
 			return ResponseEntity.ok(response);
 		}
+		
 		//validacion correcta
 		else {
 			detalleDAO.deleteById(detalleId);
@@ -138,11 +138,12 @@ public class DetallePedidoREST {
 			response.setMensaje("Solicitud exitosa");
 			return ResponseEntity.ok(response);	
 		}
-	}
+	}*/
 	
-	@PutMapping()
+	//actualizar detalle no necesario
+	/*@PutMapping()
 	public ResponseEntity<DetallePedido> updateDetalle(@RequestBody DetallePedido detalle){
 		return null;
-	}
+	}*/
 	
 }
